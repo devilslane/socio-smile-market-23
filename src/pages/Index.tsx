@@ -1,14 +1,12 @@
-
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
-import { Calendar, Tooth, ShoppingBag, Star, ArrowRight } from 'lucide-react';
+import { Calendar, Star, ShoppingBag, ArrowRight, Home, MapPin } from 'lucide-react';
 
 const Home = () => {
-  // Initialize reveal on scroll animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -29,7 +27,6 @@ const Home = () => {
     };
   }, []);
 
-  // Sample dentists data
   const featuredDentists = [
     {
       id: '1',
@@ -60,7 +57,6 @@ const Home = () => {
     }
   ];
 
-  // Sample products data
   const featuredProducts = [
     {
       id: '1',
@@ -96,13 +92,10 @@ const Home = () => {
       <Navbar />
       
       <main className="flex-grow">
-        {/* Hero Section */}
         <HeroSection />
         
-        {/* Features Section */}
         <FeaturesSection />
         
-        {/* Consultation Types */}
         <section className="py-20 bg-sociodent-50">
           <div className="container-custom">
             <div className="text-center mb-16 max-w-3xl mx-auto">
@@ -129,7 +122,7 @@ const Home = () => {
                   image: 'https://images.unsplash.com/photo-1516914589923-f105f1535f88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
                 },
                 {
-                  icon: <Tooth className="text-sociodent-600" size={32} />,
+                  icon: <Home className="text-sociodent-600" size={32} />,
                   title: 'Home Consultation',
                   description: 'Have a qualified dentist visit your home for check-ups, advice, and basic treatments.',
                   features: ['Comfort of your home', 'Family appointments', 'Thorough assessment'],
@@ -191,7 +184,6 @@ const Home = () => {
           </div>
         </section>
         
-        {/* Featured Dentists */}
         <section className="py-20 bg-white">
           <div className="container-custom">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
@@ -255,7 +247,6 @@ const Home = () => {
           </div>
         </section>
         
-        {/* Featured Products */}
         <section className="py-20 bg-gray-50">
           <div className="container-custom">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
@@ -325,7 +316,6 @@ const Home = () => {
           </div>
         </section>
         
-        {/* CTA Section */}
         <section className="py-20 bg-sociodent-600 text-white relative overflow-hidden">
           <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]"></div>
           <div className="container-custom relative z-10">
@@ -347,7 +337,6 @@ const Home = () => {
             </div>
           </div>
           
-          {/* Background Elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-sociodent-500 rounded-full blur-3xl opacity-30 transform translate-x-1/3 -translate-y-1/3"></div>
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-sociodent-500 rounded-full blur-3xl opacity-30 transform -translate-x-1/3 translate-y-1/3"></div>
         </section>

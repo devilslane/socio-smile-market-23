@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Calendar, Clock, MapPin, Video } from 'lucide-react';
+import { Calendar, Clock, MapPin, Video, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AppointmentCardProps {
