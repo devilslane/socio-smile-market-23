@@ -4,9 +4,9 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
-import { Calendar, Star, ShoppingBag, ArrowRight, Home, MapPin } from 'lucide-react';
+import { Calendar, Star, ShoppingBag, ArrowRight, Home as HomeIcon, MapPin } from 'lucide-react';
 
-const Home = () => {
+const HomePage = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -122,7 +122,7 @@ const Home = () => {
                   image: 'https://images.unsplash.com/photo-1516914589923-f105f1535f88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
                 },
                 {
-                  icon: <Home className="text-sociodent-600" size={32} />,
+                  icon: <HomeIcon className="text-sociodent-600" size={32} />,
                   title: 'Home Consultation',
                   description: 'Have a qualified dentist visit your home for check-ups, advice, and basic treatments.',
                   features: ['Comfort of your home', 'Family appointments', 'Thorough assessment'],
@@ -347,4 +347,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;
