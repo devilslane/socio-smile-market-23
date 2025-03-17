@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { Mail, Phone, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { Captcha } from '@/components/ui/captcha';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -14,6 +15,7 @@ const Auth = () => {
   const [authType, setAuthType] = useState<'email' | 'phone'>('email');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   
   // Form values
   const [email, setEmail] = useState('');
@@ -31,12 +33,32 @@ const Auth = () => {
     setName('');
     setOtp('');
     setStep('credentials');
+    setIsCaptchaVerified(false);
+    
+    // Get last used phone number from localStorage
+    const lastUsedPhone = localStorage.getItem('lastUsedPhone');
+    if (lastUsedPhone) {
+      setPhone(lastUsedPhone);
+    }
   }, [mode]);
+
+  const handleCaptchaVerify = (isVerified: boolean) => {
+    setIsCaptchaVerified(isVerified);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (step === 'credentials') {
+      if (!isCaptchaVerified) {
+        toast({
+          title: "Captcha verification required",
+          description: "Please complete the captcha verification",
+          variant: "destructive"
+        });
+        return;
+      }
+      
       if (authType === 'email' && (!email || !password || (mode === 'signup' && !name))) {
         toast({
           title: "Missing information",
@@ -55,6 +77,11 @@ const Auth = () => {
         return;
       }
       
+      // Save phone for future use
+      if (authType === 'phone' && phone) {
+        localStorage.setItem('lastUsedPhone', phone);
+      }
+      
       // Simulating OTP send
       setIsLoading(true);
       setTimeout(() => {
@@ -68,6 +95,9 @@ const Auth = () => {
           setStep('otp');
         } else {
           // For email flow in this demo, we'll just simulate success
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userName', mode === 'signup' ? name : 'User');
+          
           toast({
             title: mode === 'login' ? "Welcome back!" : "Account created!",
             description: mode === 'login' 
@@ -91,6 +121,11 @@ const Auth = () => {
       setIsLoading(true);
       setTimeout(() => {
         setIsLoading(false);
+        
+        // Store auth status
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('userName', mode === 'signup' ? name : 'User');
+        
         toast({
           title: mode === 'login' ? "Welcome back!" : "Account created!",
           description: mode === 'login' 
@@ -264,6 +299,14 @@ const Auth = () => {
                       </div>
                     </div>
                   )}
+                  
+                  {/* Captcha */}
+                  <div className="mb-6">
+                    <Captcha 
+                      onVerify={handleCaptchaVerify} 
+                      className="mb-4"
+                    />
+                  </div>
                 </>
               )}
               

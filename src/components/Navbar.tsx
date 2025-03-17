@@ -1,15 +1,37 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingCart, User } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, ShoppingCart, User, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userName, setUserName] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const isAuthenticated = false; // This will be replaced with actual auth logic later
+  useEffect(() => {
+    // Check authentication status from localStorage
+    const checkAuth = () => {
+      const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+      const storedName = localStorage.getItem('userName') || 'User';
+      setIsAuthenticated(authStatus);
+      setUserName(storedName);
+    };
+    
+    checkAuth(); // Initial check
+    
+    // Setup event listener for storage changes
+    window.addEventListener('storage', checkAuth);
+    
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,12 +53,37 @@ const Navbar = () => {
     setIsOpen(false);
   }, [location.pathname]);
 
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userName');
+    setIsAuthenticated(false);
+    setUserName('');
+    
+    toast({
+      title: "Logged Out",
+      description: "You have been logged out successfully"
+    });
+    
+    if (location.pathname === '/dashboard') {
+      navigate('/');
+    }
+  };
+
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Consultation', path: '/consultation' },
     { name: 'Marketplace', path: '/marketplace' },
     { name: 'About', path: '/about' },
   ];
+
+  const authNavLinks = [
+    { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Consultation', path: '/consultation' },
+    { name: 'Marketplace', path: '/marketplace' },
+    { name: 'About', path: '/about' },
+  ];
+
+  const activeLinks = isAuthenticated ? authNavLinks : navLinks;
 
   return (
     <header
@@ -61,7 +108,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {activeLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
@@ -81,15 +128,25 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-4">
             {isAuthenticated ? (
               <>
-                <Link to="/cart" className="relative p-2 text-gray-700 hover:text-sociodent-600 transition-colors">
+                <Link to="/checkout" className="relative p-2 text-gray-700 hover:text-sociodent-600 transition-colors">
                   <ShoppingCart size={20} />
                   <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs text-white bg-sociodent-500 rounded-full">
                     0
                   </span>
                 </Link>
-                <Link to="/dashboard" className="button-secondary py-2">
-                  Dashboard
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link to="/dashboard" className="button-secondary py-2">
+                    <User size={16} className="mr-1" />
+                    {userName}
+                  </Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="p-2 text-gray-700 hover:text-red-600 transition-colors"
+                    aria-label="Log out"
+                  >
+                    <LogOut size={20} />
+                  </button>
+                </div>
               </>
             ) : (
               <>
@@ -121,7 +178,7 @@ const Navbar = () => {
           )}
         >
           <div className="flex flex-col gap-6">
-            {navLinks.map((link) => (
+            {activeLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
@@ -140,13 +197,21 @@ const Navbar = () => {
           <div className="mt-auto space-y-4">
             {isAuthenticated ? (
               <>
-                <Link to="/cart" className="flex items-center gap-2 py-3">
+                <Link to="/checkout" className="flex items-center gap-2 py-3">
                   <ShoppingCart size={20} />
                   <span>Cart (0)</span>
                 </Link>
-                <Link to="/dashboard" className="button-primary w-full flex justify-center">
-                  Dashboard
+                <Link to="/dashboard" className="button-primary w-full flex justify-center items-center">
+                  <User size={16} className="mr-2" />
+                  {userName}'s Dashboard
                 </Link>
+                <button 
+                  onClick={handleLogout}
+                  className="button-secondary w-full flex justify-center items-center"
+                >
+                  <LogOut size={16} className="mr-2" />
+                  Log out
+                </button>
               </>
             ) : (
               <>
