@@ -56,9 +56,6 @@ const Navbar = () => {
           >
             <span className="flex items-center gap-2">
               SocioDent
-              <span className="hidden sm:inline-block px-2 py-1 text-xs font-semibold bg-sociodent-100 text-sociodent-700 rounded-full">
-                Beta
-              </span>
             </span>
           </Link>
 
