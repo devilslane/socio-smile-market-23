@@ -1,28 +1,43 @@
 
 import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Calendar, Users, MessageSquare, FileText, Settings, ClipboardList } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 const DoctorPortal = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState('');
   const [activeTab, setActiveTab] = useState('appointments');
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Check authentication and role
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     const role = localStorage.getItem('userRole') || '';
     
+    console.log("DoctorPortal - Auth Status:", authStatus, "Role:", role);
+    
     setIsAuthenticated(authStatus);
     setUserRole(role);
-  }, []);
+    
+    // If not authenticated or not a doctor, redirect
+    if (!authStatus || role !== 'doctor') {
+      toast({
+        title: "Access Denied",
+        description: "You must be logged in as a doctor to access this page",
+        variant: "destructive"
+      });
+      navigate('/auth?mode=login&role=doctor', { replace: true });
+    }
+  }, [navigate, toast]);
 
-  // Redirect if not authenticated or not a doctor
+  // Render content only if authenticated and correct role
   if (!isAuthenticated || userRole !== 'doctor') {
-    return <Navigate to="/auth?mode=login&role=doctor" />;
+    return null; // Returning null to prevent flash of content before redirect happens
   }
 
   const tabs = [

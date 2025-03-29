@@ -1,28 +1,43 @@
 
 import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Users, BarChart, ShoppingBag, Settings, Database, Shield, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminPortal = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Check authentication and role
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     const role = localStorage.getItem('userRole') || '';
     
+    console.log("AdminPortal - Auth Status:", authStatus, "Role:", role);
+    
     setIsAuthenticated(authStatus);
     setUserRole(role);
-  }, []);
+    
+    // If not authenticated or not an admin, redirect
+    if (!authStatus || role !== 'admin') {
+      toast({
+        title: "Access Denied",
+        description: "You must be logged in as an admin to access this page",
+        variant: "destructive"
+      });
+      navigate('/auth?mode=login&role=admin', { replace: true });
+    }
+  }, [navigate, toast]);
 
-  // Redirect if not authenticated or not an admin
+  // Render content only if authenticated and correct role
   if (!isAuthenticated || userRole !== 'admin') {
-    return <Navigate to="/auth?mode=login&role=admin" />;
+    return null; // Returning null to prevent flash of content before redirect happens
   }
 
   const tabs = [

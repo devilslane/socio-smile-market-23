@@ -50,15 +50,15 @@ const Auth = () => {
   };
 
   const redirectBasedOnRole = (userRole: string) => {
-    setTimeout(() => {
-      if (userRole === 'doctor') {
-        navigate('/doctor-portal', { replace: true });
-      } else if (userRole === 'admin') {
-        navigate('/admin-portal', { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
-    }, 100);
+    console.log("Redirecting user with role:", userRole);
+    
+    if (userRole === 'doctor') {
+      navigate('/doctor-portal');
+    } else if (userRole === 'admin') {
+      navigate('/admin-portal');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -97,7 +97,7 @@ const Auth = () => {
           });
 
           redirectBasedOnRole(role);
-        }, 1500);
+        }, 1000);
         return;
       }
       
@@ -147,7 +147,7 @@ const Auth = () => {
 
           redirectBasedOnRole(role);
         }
-      }, 1500);
+      }, 1000);
     } else if (step === 'otp') {
       if (!otp || otp.length < 4) {
         toast({
@@ -174,7 +174,7 @@ const Auth = () => {
         });
 
         redirectBasedOnRole(role);
-      }, 1500);
+      }, 1000);
     }
   };
 
