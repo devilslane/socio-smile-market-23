@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { Mail, Phone, Eye, EyeOff, ArrowLeft, User, UserCog, BadgeHelp } from 'lucide-react';
@@ -18,7 +17,6 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   
-  // Form values
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -26,8 +24,13 @@ const Auth = () => {
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
 
+  const DEMO_CREDENTIALS = {
+    user: { email: 'user@demo.com', password: 'user123' },
+    doctor: { email: 'doctor@demo.com', password: 'doctor123' },
+    admin: { email: 'admin@demo.com', password: 'admin123' }
+  };
+
   useEffect(() => {
-    // Reset form values when mode or role changes
     setEmail('');
     setPhone('');
     setPassword('');
@@ -36,7 +39,6 @@ const Auth = () => {
     setStep('credentials');
     setIsCaptchaVerified(false);
     
-    // Get last used phone number from localStorage
     const lastUsedPhone = localStorage.getItem('lastUsedPhone');
     if (lastUsedPhone) {
       setPhone(lastUsedPhone);
@@ -48,7 +50,6 @@ const Auth = () => {
   };
 
   const redirectBasedOnRole = (userRole: string) => {
-    // Force a small delay to ensure localStorage is updated before redirect
     setTimeout(() => {
       if (userRole === 'doctor') {
         navigate('/doctor-portal', { replace: true });
@@ -63,6 +64,14 @@ const Auth = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    const isDemoCredential = (role: string) => {
+      const demoUser = DEMO_CREDENTIALS[role as keyof typeof DEMO_CREDENTIALS];
+      return (
+        (authType === 'email' && email === demoUser.email && password === demoUser.password) ||
+        (authType === 'phone' && phone === demoUser.email)
+      );
+    };
+
     if (step === 'credentials') {
       if (!isCaptchaVerified) {
         toast({
@@ -70,6 +79,25 @@ const Auth = () => {
           description: "Please complete the captcha verification",
           variant: "destructive"
         });
+        return;
+      }
+      
+      if (isDemoCredential(role)) {
+        setIsLoading(true);
+        setTimeout(() => {
+          setIsLoading(false);
+          
+          localStorage.setItem('userRole', role);
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userName', `Demo ${role.charAt(0).toUpperCase() + role.slice(1)}`);
+          
+          toast({
+            title: "Demo Login Successful",
+            description: `Logged in as ${role.charAt(0).toUpperCase() + role.slice(1)} Demo Account`,
+          });
+
+          redirectBasedOnRole(role);
+        }, 1500);
         return;
       }
       
@@ -91,12 +119,10 @@ const Auth = () => {
         return;
       }
       
-      // Save phone for future use
       if (authType === 'phone' && phone) {
         localStorage.setItem('lastUsedPhone', phone);
       }
       
-      // Simulating OTP send
       setIsLoading(true);
       setTimeout(() => {
         setIsLoading(false);
@@ -108,7 +134,6 @@ const Auth = () => {
           });
           setStep('otp');
         } else {
-          // Store role information
           localStorage.setItem('userRole', role);
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('userName', mode === 'signup' ? name : 'User');
@@ -120,12 +145,10 @@ const Auth = () => {
               : "Your account has been created successfully.",
           });
 
-          // Use the redirect function instead of navigate
           redirectBasedOnRole(role);
         }
       }, 1500);
     } else if (step === 'otp') {
-      // Verify OTP
       if (!otp || otp.length < 4) {
         toast({
           title: "Invalid OTP",
@@ -139,7 +162,6 @@ const Auth = () => {
       setTimeout(() => {
         setIsLoading(false);
         
-        // Store auth status and role
         localStorage.setItem('userRole', role);
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('userName', mode === 'signup' ? name : 'User');
@@ -151,7 +173,6 @@ const Auth = () => {
             : "Your account has been created successfully.",
         });
 
-        // Use the redirect function instead of navigate
         redirectBasedOnRole(role);
       }, 1500);
     }
@@ -163,24 +184,36 @@ const Auth = () => {
   };
 
   const roleButtons = [
-    { name: 'User', role: 'user', icon: <User size={20} className="mr-2" /> },
-    { name: 'Doctor', role: 'doctor', icon: <BadgeHelp size={20} className="mr-2" /> },
-    { name: 'Admin', role: 'admin', icon: <UserCog size={20} className="mr-2" /> },
+    { 
+      name: 'User', 
+      role: 'user', 
+      icon: <User size={20} className="mr-2" />,
+      demoCredential: DEMO_CREDENTIALS.user.email
+    },
+    { 
+      name: 'Doctor', 
+      role: 'doctor', 
+      icon: <BadgeHelp size={20} className="mr-2" />,
+      demoCredential: DEMO_CREDENTIALS.doctor.email
+    },
+    { 
+      name: 'Admin', 
+      role: 'admin', 
+      icon: <UserCog size={20} className="mr-2" />,
+      demoCredential: DEMO_CREDENTIALS.admin.email
+    },
   ];
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-sociodent-50 to-white">
       <div className="flex flex-col flex-grow items-center justify-center p-4">
         <div className="w-full max-w-md">
-          {/* Back to Home */}
           <Link to="/" className="inline-flex items-center text-sociodent-600 hover:text-sociodent-700 mb-8 transition-colors">
             <ArrowLeft size={16} className="mr-1" />
             Back to Home
           </Link>
           
-          {/* Auth Card */}
           <div className="glass-card rounded-2xl p-8 border border-white/50 shadow-glass">
-            {/* Logo */}
             <div className="text-center mb-6">
               <Link to="/" className="inline-block text-2xl font-bold text-sociodent-700">
                 SocioDent
@@ -204,7 +237,6 @@ const Auth = () => {
               </p>
             </div>
 
-            {/* Role Selection */}
             {step === 'credentials' && mode === 'login' && (
               <div className="mb-6">
                 <div className="grid grid-cols-3 gap-2">
@@ -221,6 +253,11 @@ const Auth = () => {
                     >
                       {button.icon}
                       <span className="text-sm">{button.name}</span>
+                      {button.demoCredential && (
+                        <span className="text-xs text-gray-500 ml-2">
+                          Demo Login: {button.demoCredential}
+                        </span>
+                      )}
                     </Link>
                   ))}
                 </div>
@@ -230,7 +267,6 @@ const Auth = () => {
             <form onSubmit={handleSubmit}>
               {step === 'credentials' && (
                 <>
-                  {/* Auth Type Selector */}
                   <div className="flex bg-gray-100 p-1 rounded-lg mb-6">
                     <button
                       type="button"
@@ -258,7 +294,6 @@ const Auth = () => {
                     </button>
                   </div>
                   
-                  {/* Name - only for signup */}
                   {mode === 'signup' && (
                     <div className="mb-4">
                       <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -275,7 +310,6 @@ const Auth = () => {
                     </div>
                   )}
                   
-                  {/* Email or Phone */}
                   {authType === 'email' ? (
                     <div className="mb-4">
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -316,7 +350,6 @@ const Auth = () => {
                     </div>
                   )}
                   
-                  {/* Password - only for email auth */}
                   {authType === 'email' && (
                     <div className="mb-6">
                       <div className="flex justify-between mb-1">
@@ -349,7 +382,6 @@ const Auth = () => {
                     </div>
                   )}
                   
-                  {/* Captcha */}
                   <div className="mb-6">
                     <Captcha 
                       onVerify={handleCaptchaVerify} 
@@ -359,7 +391,6 @@ const Auth = () => {
                 </>
               )}
               
-              {/* OTP Input */}
               {step === 'otp' && (
                 <div className="mb-6">
                   <div className="mb-4">
@@ -398,7 +429,6 @@ const Auth = () => {
                 </div>
               )}
               
-              {/* Submit Button */}
               <button
                 type="submit"
                 className={cn(
@@ -426,7 +456,6 @@ const Auth = () => {
               </button>
             </form>
             
-            {/* Auth Switch */}
             {step === 'credentials' && (
               <div className="mt-6 text-center">
                 <p className="text-gray-600">
