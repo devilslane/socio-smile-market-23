@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { Mail, Phone, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Mail, Phone, Eye, EyeOff, ArrowLeft, User, UserCog, BadgeHelp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Captcha } from '@/components/ui/captcha';
@@ -9,6 +9,7 @@ import { Captcha } from '@/components/ui/captcha';
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get('mode') || 'login';
+  const role = searchParams.get('role') || 'user';
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -26,7 +27,7 @@ const Auth = () => {
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
 
   useEffect(() => {
-    // Reset form values when mode changes
+    // Reset form values when mode or role changes
     setEmail('');
     setPhone('');
     setPassword('');
@@ -40,7 +41,7 @@ const Auth = () => {
     if (lastUsedPhone) {
       setPhone(lastUsedPhone);
     }
-  }, [mode]);
+  }, [mode, role]);
 
   const handleCaptchaVerify = (isVerified: boolean) => {
     setIsCaptchaVerified(isVerified);
@@ -94,7 +95,8 @@ const Auth = () => {
           });
           setStep('otp');
         } else {
-          // For email flow in this demo, we'll just simulate success
+          // Store role information
+          localStorage.setItem('userRole', role);
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('userName', mode === 'signup' ? name : 'User');
           
@@ -104,7 +106,15 @@ const Auth = () => {
               ? "You've successfully logged in." 
               : "Your account has been created successfully.",
           });
-          navigate('/dashboard');
+
+          // Redirect based on role
+          if (role === 'doctor') {
+            navigate('/doctor-portal');
+          } else if (role === 'admin') {
+            navigate('/admin-portal');
+          } else {
+            navigate('/dashboard');
+          }
         }
       }, 1500);
     } else if (step === 'otp') {
@@ -122,7 +132,8 @@ const Auth = () => {
       setTimeout(() => {
         setIsLoading(false);
         
-        // Store auth status
+        // Store auth status and role
+        localStorage.setItem('userRole', role);
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('userName', mode === 'signup' ? name : 'User');
         
@@ -132,7 +143,15 @@ const Auth = () => {
             ? "You've successfully logged in." 
             : "Your account has been created successfully.",
         });
-        navigate('/dashboard');
+
+        // Redirect based on role
+        if (role === 'doctor') {
+          navigate('/doctor-portal');
+        } else if (role === 'admin') {
+          navigate('/admin-portal');
+        } else {
+          navigate('/dashboard');
+        }
       }, 1500);
     }
   };
@@ -141,6 +160,12 @@ const Auth = () => {
     setStep('credentials');
     setOtp('');
   };
+
+  const roleButtons = [
+    { name: 'User', role: 'user', icon: <User size={20} className="mr-2" /> },
+    { name: 'Doctor', role: 'doctor', icon: <BadgeHelp size={20} className="mr-2" /> },
+    { name: 'Admin', role: 'admin', icon: <UserCog size={20} className="mr-2" /> },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-sociodent-50 to-white">
@@ -161,7 +186,7 @@ const Auth = () => {
               </Link>
             </div>
             
-            <div className="text-center mb-8">
+            <div className="text-center mb-6">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 {step === 'credentials' 
                   ? (mode === 'login' ? 'Welcome Back' : 'Create Your Account') 
@@ -177,6 +202,29 @@ const Auth = () => {
                 }
               </p>
             </div>
+
+            {/* Role Selection */}
+            {step === 'credentials' && mode === 'login' && (
+              <div className="mb-6">
+                <div className="grid grid-cols-3 gap-2">
+                  {roleButtons.map((button) => (
+                    <Link
+                      key={button.role}
+                      to={`/auth?mode=login&role=${button.role}`}
+                      className={cn(
+                        "flex items-center justify-center py-2 px-4 rounded-lg transition-all",
+                        role === button.role
+                          ? "bg-sociodent-500 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      )}
+                    >
+                      {button.icon}
+                      <span className="text-sm">{button.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
             
             <form onSubmit={handleSubmit}>
               {step === 'credentials' && (
@@ -369,7 +417,7 @@ const Auth = () => {
                 ) : (
                   <span>
                     {step === 'credentials' 
-                      ? (mode === 'login' ? 'Sign In' : 'Create Account') 
+                      ? (mode === 'login' ? `Sign In as ${role === 'user' ? 'User' : role === 'doctor' ? 'Doctor' : 'Admin'}` : 'Create Account') 
                       : 'Verify'
                     }
                   </span>

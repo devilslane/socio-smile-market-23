@@ -13,6 +13,8 @@ import ProductDetails from "./pages/ProductDetails";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
+import DoctorPortal from "./pages/DoctorPortal";
+import AdminPortal from "./pages/AdminPortal";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/marketplace/:productId" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/doctor-portal" element={<DoctorPortal />} />
+          <Route path="/admin-portal" element={<AdminPortal />} />
           <Route path="/about" element={<About />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

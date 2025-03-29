@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingCart, User, LogOut } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, UserCog, BadgeHelp, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -10,6 +10,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -19,8 +20,11 @@ const Navbar = () => {
     const checkAuth = () => {
       const authStatus = localStorage.getItem('isAuthenticated') === 'true';
       const storedName = localStorage.getItem('userName') || 'User';
+      const storedRole = localStorage.getItem('userRole') || 'user';
+      
       setIsAuthenticated(authStatus);
       setUserName(storedName);
+      setUserRole(storedRole);
     };
     
     checkAuth(); // Initial check
@@ -56,17 +60,17 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
     setIsAuthenticated(false);
     setUserName('');
+    setUserRole('');
     
     toast({
       title: "Logged Out",
       description: "You have been logged out successfully"
     });
     
-    if (location.pathname === '/dashboard') {
-      navigate('/');
-    }
+    navigate('/');
   };
 
   const navLinks = [
@@ -76,14 +80,37 @@ const Navbar = () => {
     { name: 'About', path: '/about' },
   ];
 
-  const authNavLinks = [
+  const userNavLinks = [
     { name: 'Dashboard', path: '/dashboard' },
     { name: 'Consultation', path: '/consultation' },
     { name: 'Marketplace', path: '/marketplace' },
     { name: 'About', path: '/about' },
   ];
 
-  const activeLinks = isAuthenticated ? authNavLinks : navLinks;
+  const doctorNavLinks = [
+    { name: 'Doctor Portal', path: '/doctor-portal' },
+    { name: 'Consultation', path: '/consultation' },
+    { name: 'Marketplace', path: '/marketplace' },
+    { name: 'About', path: '/about' },
+  ];
+
+  const adminNavLinks = [
+    { name: 'Admin Portal', path: '/admin-portal' },
+    { name: 'Marketplace', path: '/marketplace' },
+    { name: 'About', path: '/about' },
+  ];
+
+  // Choose appropriate nav links based on role
+  let activeLinks = navLinks;
+  if (isAuthenticated) {
+    if (userRole === 'doctor') {
+      activeLinks = doctorNavLinks;
+    } else if (userRole === 'admin') {
+      activeLinks = adminNavLinks;
+    } else {
+      activeLinks = userNavLinks;
+    }
+  }
 
   return (
     <header
@@ -135,8 +162,23 @@ const Navbar = () => {
                   </span>
                 </Link>
                 <div className="flex items-center gap-2">
-                  <Link to="/dashboard" className="button-secondary py-2">
-                    <User size={16} className="mr-1" />
+                  <Link 
+                    to={
+                      userRole === 'doctor' 
+                        ? '/doctor-portal' 
+                        : userRole === 'admin' 
+                          ? '/admin-portal' 
+                          : '/dashboard'
+                    } 
+                    className="button-secondary py-2"
+                  >
+                    {userRole === 'doctor' ? (
+                      <BadgeHelp size={16} className="mr-1" />
+                    ) : userRole === 'admin' ? (
+                      <UserCog size={16} className="mr-1" />
+                    ) : (
+                      <User size={16} className="mr-1" />
+                    )}
                     {userName}
                   </Link>
                   <button 
@@ -201,9 +243,24 @@ const Navbar = () => {
                   <ShoppingCart size={20} />
                   <span>Cart (0)</span>
                 </Link>
-                <Link to="/dashboard" className="button-primary w-full flex justify-center items-center">
-                  <User size={16} className="mr-2" />
-                  {userName}'s Dashboard
+                <Link 
+                  to={
+                    userRole === 'doctor' 
+                      ? '/doctor-portal' 
+                      : userRole === 'admin' 
+                        ? '/admin-portal' 
+                        : '/dashboard'
+                  } 
+                  className="button-primary w-full flex justify-center items-center"
+                >
+                  {userRole === 'doctor' ? (
+                    <BadgeHelp size={16} className="mr-2" />
+                  ) : userRole === 'admin' ? (
+                    <UserCog size={16} className="mr-2" />
+                  ) : (
+                    <User size={16} className="mr-2" />
+                  )}
+                  {userName}'s {userRole === 'doctor' ? 'Portal' : userRole === 'admin' ? 'Admin' : 'Dashboard'}
                 </Link>
                 <button 
                   onClick={handleLogout}
