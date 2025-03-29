@@ -47,6 +47,19 @@ const Auth = () => {
     setIsCaptchaVerified(isVerified);
   };
 
+  const redirectBasedOnRole = (userRole: string) => {
+    // Force a small delay to ensure localStorage is updated before redirect
+    setTimeout(() => {
+      if (userRole === 'doctor') {
+        navigate('/doctor-portal', { replace: true });
+      } else if (userRole === 'admin') {
+        navigate('/admin-portal', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    }, 100);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -107,14 +120,8 @@ const Auth = () => {
               : "Your account has been created successfully.",
           });
 
-          // Redirect based on role
-          if (role === 'doctor') {
-            navigate('/doctor-portal');
-          } else if (role === 'admin') {
-            navigate('/admin-portal');
-          } else {
-            navigate('/dashboard');
-          }
+          // Use the redirect function instead of navigate
+          redirectBasedOnRole(role);
         }
       }, 1500);
     } else if (step === 'otp') {
@@ -144,14 +151,8 @@ const Auth = () => {
             : "Your account has been created successfully.",
         });
 
-        // Redirect based on role
-        if (role === 'doctor') {
-          navigate('/doctor-portal');
-        } else if (role === 'admin') {
-          navigate('/admin-portal');
-        } else {
-          navigate('/dashboard');
-        }
+        // Use the redirect function instead of navigate
+        redirectBasedOnRole(role);
       }, 1500);
     }
   };
