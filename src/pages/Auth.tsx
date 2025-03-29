@@ -187,20 +187,17 @@ const Auth = () => {
     { 
       name: 'User', 
       role: 'user', 
-      icon: <User size={20} className="mr-2" />,
-      demoCredential: DEMO_CREDENTIALS.user.email
+      icon: <User size={20} className="mr-2" />
     },
     { 
       name: 'Doctor', 
       role: 'doctor', 
-      icon: <BadgeHelp size={20} className="mr-2" />,
-      demoCredential: DEMO_CREDENTIALS.doctor.email
+      icon: <BadgeHelp size={20} className="mr-2" />
     },
     { 
       name: 'Admin', 
       role: 'admin', 
-      icon: <UserCog size={20} className="mr-2" />,
-      demoCredential: DEMO_CREDENTIALS.admin.email
+      icon: <UserCog size={20} className="mr-2" />
     },
   ];
 
@@ -253,11 +250,6 @@ const Auth = () => {
                     >
                       {button.icon}
                       <span className="text-sm">{button.name}</span>
-                      {button.demoCredential && (
-                        <span className="text-xs text-gray-500 ml-2">
-                          Demo Login: {button.demoCredential}
-                        </span>
-                      )}
                     </Link>
                   ))}
                 </div>
