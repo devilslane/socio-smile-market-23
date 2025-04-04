@@ -12,7 +12,7 @@ const mockProducts = [
   {
     id: '1',
     name: 'Sonic Pro Electric Toothbrush',
-    image: 'https://images.unsplash.com/photo-1559304822-9eb5e14a44ee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1572315831029-5e8146afb5f7?auto=format&fit=crop&w=500&q=80',
     price: 79.99,
     rating: 4.8,
     reviewCount: 342,
@@ -39,7 +39,7 @@ const mockProducts = [
   {
     id: '2',
     name: 'Premium Teeth Whitening Kit',
-    image: 'https://images.unsplash.com/photo-1570001276999-bc13027db47b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1625795188134-e68a12931bd3?auto=format&fit=crop&w=500&q=80',
     price: 49.99,
     rating: 4.6,
     reviewCount: 219,
@@ -66,7 +66,7 @@ const mockProducts = [
   {
     id: '3',
     name: 'Organic Mint Dental Floss',
-    image: 'https://images.unsplash.com/photo-1612887726773-e64e49123924?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?auto=format&fit=crop&w=500&q=80',
     price: 8.99,
     rating: 4.7,
     reviewCount: 156,
@@ -96,7 +96,7 @@ const relatedProducts = [
   {
     id: '5',
     name: 'Sensitive Teeth Toothpaste',
-    image: 'https://images.unsplash.com/photo-1598255777148-a7b2d18321d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1628359355624-855775b5c9c4?auto=format&fit=crop&w=500&q=80',
     price: 6.99,
     rating: 4.9,
     reviewCount: 267,
@@ -106,7 +106,7 @@ const relatedProducts = [
   {
     id: '8',
     name: 'Bamboo Toothbrush Set',
-    image: 'https://images.unsplash.com/photo-1616709073893-d7a2c3a4aa4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1575675069903-57c89daf1265?auto=format&fit=crop&w=500&q=80',
     price: 14.99,
     rating: 4.7,
     reviewCount: 221,
@@ -116,7 +116,7 @@ const relatedProducts = [
   {
     id: '4',
     name: 'Antibacterial Mouthwash',
-    image: 'https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
+    image: 'https://images.unsplash.com/photo-1612888473221-92ebd5c28dcf?auto=format&fit=crop&w=500&q=80',
     price: 12.99,
     rating: 4.5,
     reviewCount: 178,
