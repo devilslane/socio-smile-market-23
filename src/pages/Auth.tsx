@@ -24,12 +24,6 @@ const Auth = () => {
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
 
-  const DEMO_CREDENTIALS = {
-    user: { email: 'user@demo.com', password: 'user123' },
-    doctor: { email: 'doctor@demo.com', password: 'doctor123' },
-    admin: { email: 'admin@demo.com', password: 'admin123' }
-  };
-
   useEffect(() => {
     setEmail('');
     setPhone('');
@@ -64,14 +58,6 @@ const Auth = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const isDemoCredential = (role: string) => {
-      const demoUser = DEMO_CREDENTIALS[role as keyof typeof DEMO_CREDENTIALS];
-      return (
-        (authType === 'email' && email === demoUser.email && password === demoUser.password) ||
-        (authType === 'phone' && phone === demoUser.email)
-      );
-    };
-
     if (step === 'credentials') {
       if (!isCaptchaVerified) {
         toast({
@@ -79,25 +65,6 @@ const Auth = () => {
           description: "Please complete the captcha verification",
           variant: "destructive"
         });
-        return;
-      }
-      
-      if (isDemoCredential(role)) {
-        setIsLoading(true);
-        setTimeout(() => {
-          setIsLoading(false);
-          
-          localStorage.setItem('userRole', role);
-          localStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('userName', `Demo ${role.charAt(0).toUpperCase() + role.slice(1)}`);
-          
-          toast({
-            title: "Demo Login Successful",
-            description: `Logged in as ${role.charAt(0).toUpperCase() + role.slice(1)} Demo Account`,
-          });
-
-          redirectBasedOnRole(role);
-        }, 1000);
         return;
       }
       
