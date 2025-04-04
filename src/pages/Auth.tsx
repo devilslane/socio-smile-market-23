@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { Mail, Phone, Eye, EyeOff, ArrowLeft, User, UserCog, BadgeHelp } from 'lucide-react';
+import { Mail, Phone, Eye, EyeOff, ArrowLeft, User, UserCog, BadgeHelp, FileText, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Captcha } from '@/components/ui/captcha';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -22,7 +24,14 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
+  const [step, setStep] = useState<'credentials' | 'otp' | 'documents'>('credentials');
+  
+  const [licenseFile, setLicenseFile] = useState<File | null>(null);
+  const [certificateFile, setCertificateFile] = useState<File | null>(null);
+  const [idFile, setIdFile] = useState<File | null>(null);
+  const [specialization, setSpecialization] = useState('');
+  const [experience, setExperience] = useState('');
+  const [bio, setBio] = useState('');
 
   useEffect(() => {
     setEmail('');
@@ -32,6 +41,12 @@ const Auth = () => {
     setOtp('');
     setStep('credentials');
     setIsCaptchaVerified(false);
+    setLicenseFile(null);
+    setCertificateFile(null);
+    setIdFile(null);
+    setSpecialization('');
+    setExperience('');
+    setBio('');
     
     const lastUsedPhone = localStorage.getItem('lastUsedPhone');
     if (lastUsedPhone) {
@@ -53,6 +68,20 @@ const Auth = () => {
     } else {
       navigate('/dashboard');
     }
+  };
+
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setFile: React.Dispatch<React.SetStateAction<File | null>>
+  ) => {
+    if (event.target.files && event.target.files[0]) {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  const handleBackToCredentials = () => {
+    setStep('credentials');
+    setOtp('');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -101,18 +130,15 @@ const Auth = () => {
           });
           setStep('otp');
         } else {
-          localStorage.setItem('userRole', role);
-          localStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('userName', mode === 'signup' ? name : 'User');
-          
-          toast({
-            title: mode === 'login' ? "Welcome back!" : "Account created!",
-            description: mode === 'login' 
-              ? "You've successfully logged in." 
-              : "Your account has been created successfully.",
-          });
-
-          redirectBasedOnRole(role);
+          if (mode === 'signup' && role === 'doctor') {
+            toast({
+              title: "Complete your profile",
+              description: "Please submit your documents for verification.",
+            });
+            setStep('documents');
+          } else {
+            completeAuthentication();
+          }
         }
       }, 1000);
     } else if (step === 'otp') {
@@ -129,25 +155,59 @@ const Auth = () => {
       setTimeout(() => {
         setIsLoading(false);
         
-        localStorage.setItem('userRole', role);
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userName', mode === 'signup' ? name : 'User');
+        if (mode === 'signup' && role === 'doctor') {
+          toast({
+            title: "Complete your profile",
+            description: "Please submit your documents for verification.",
+          });
+          setStep('documents');
+        } else {
+          completeAuthentication();
+        }
+      }, 1000);
+    } else if (step === 'documents') {
+      if (!licenseFile || !certificateFile || !idFile || !specialization || !experience) {
+        toast({
+          title: "Missing information",
+          description: "Please upload all required documents and fill in all fields.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
         
         toast({
-          title: mode === 'login' ? "Welcome back!" : "Account created!",
-          description: mode === 'login' 
-            ? "You've successfully logged in." 
-            : "Your account has been created successfully.",
+          title: "Documents submitted",
+          description: "Your documents have been submitted for verification. You will be notified when your account is approved.",
         });
 
-        redirectBasedOnRole(role);
+        localStorage.setItem('doctorVerificationStatus', 'pending');
+        
+        localStorage.setItem('userRole', role);
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('userName', name);
+        
+        navigate('/dashboard');
       }, 1000);
     }
   };
+  
+  const completeAuthentication = () => {
+    localStorage.setItem('userRole', role);
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('userName', mode === 'signup' ? name : 'User');
+    
+    toast({
+      title: mode === 'login' ? "Welcome back!" : "Account created!",
+      description: mode === 'login' 
+        ? "You've successfully logged in." 
+        : "Your account has been created successfully.",
+    });
 
-  const handleBackToCredentials = () => {
-    setStep('credentials');
-    setOtp('');
+    redirectBasedOnRole(role);
   };
 
   const roleButtons = [
@@ -188,7 +248,9 @@ const Auth = () => {
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 {step === 'credentials' 
                   ? (mode === 'login' ? 'Welcome Back' : 'Create Your Account') 
-                  : 'Verify Your Phone'
+                  : step === 'otp'
+                    ? 'Verify Your Phone'
+                    : 'Complete Your Profile'
                 }
               </h1>
               <p className="text-gray-600">
@@ -196,7 +258,9 @@ const Auth = () => {
                   ? (mode === 'login' 
                     ? 'Sign in to access your account' 
                     : 'Join SocioDent for better dental care')
-                  : 'Enter the code we sent to your phone'
+                  : step === 'otp'
+                    ? 'Enter the code we sent to your phone'
+                    : 'Upload your credentials for verification'
                 }
               </p>
             </div>
@@ -388,6 +452,138 @@ const Auth = () => {
                 </div>
               )}
               
+              {step === 'documents' && (
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <label htmlFor="specialization" className="block text-sm font-medium text-gray-700 mb-1">
+                      Specialization
+                    </label>
+                    <Input
+                      type="text"
+                      id="specialization"
+                      placeholder="e.g., Orthodontist, Periodontist"
+                      value={specialization}
+                      onChange={(e) => setSpecialization(e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="experience" className="block text-sm font-medium text-gray-700 mb-1">
+                      Years of Experience
+                    </label>
+                    <Input
+                      type="text"
+                      id="experience"
+                      placeholder="e.g., 5 years"
+                      value={experience}
+                      onChange={(e) => setExperience(e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
+                      Professional Bio
+                    </label>
+                    <Textarea
+                      id="bio"
+                      placeholder="Briefly describe your professional background and expertise..."
+                      rows={3}
+                      value={bio}
+                      onChange={(e) => setBio(e.target.value)}
+                      className="resize-none"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="license" className="block text-sm font-medium text-gray-700 mb-1">
+                      Dental License <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type="file"
+                        id="license"
+                        className="hidden"
+                        accept="application/pdf,image/*"
+                        onChange={(e) => handleFileChange(e, setLicenseFile)}
+                        required
+                      />
+                      <label
+                        htmlFor="license"
+                        className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-gray-300 rounded-lg text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
+                      >
+                        <Upload size={16} />
+                        {licenseFile ? licenseFile.name : 'Upload your dental license'}
+                      </label>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">PDF or image files only</p>
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="certificate" className="block text-sm font-medium text-gray-700 mb-1">
+                      Dental Certificate <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type="file"
+                        id="certificate"
+                        className="hidden"
+                        accept="application/pdf,image/*"
+                        onChange={(e) => handleFileChange(e, setCertificateFile)}
+                        required
+                      />
+                      <label
+                        htmlFor="certificate"
+                        className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-gray-300 rounded-lg text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
+                      >
+                        <Upload size={16} />
+                        {certificateFile ? certificateFile.name : 'Upload your dental certificate'}
+                      </label>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">PDF or image files only</p>
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="idFile" className="block text-sm font-medium text-gray-700 mb-1">
+                      Government-issued ID <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type="file"
+                        id="idFile"
+                        className="hidden"
+                        accept="application/pdf,image/*"
+                        onChange={(e) => handleFileChange(e, setIdFile)}
+                        required
+                      />
+                      <label
+                        htmlFor="idFile"
+                        className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-gray-300 rounded-lg text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
+                      >
+                        <Upload size={16} />
+                        {idFile ? idFile.name : 'Upload your ID proof'}
+                      </label>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">PDF or image files only</p>
+                  </div>
+                  
+                  <p className="text-sm text-gray-600 mt-4">
+                    <FileText size={16} className="inline-block mr-1" />
+                    Your documents will be reviewed by our team within 2-3 business days.
+                  </p>
+                  
+                  <button
+                    type="button"
+                    className="flex items-center justify-center w-full text-sociodent-600 hover:text-sociodent-700 mb-2"
+                    onClick={handleBackToCredentials}
+                  >
+                    <ArrowLeft size={16} className="mr-1" />
+                    Back to credentials
+                  </button>
+                </div>
+              )}
+              
               <button
                 type="submit"
                 className={cn(
@@ -408,7 +604,9 @@ const Auth = () => {
                   <span>
                     {step === 'credentials' 
                       ? (mode === 'login' ? `Sign In as ${role === 'user' ? 'User' : role === 'doctor' ? 'Doctor' : 'Admin'}` : 'Create Account') 
-                      : 'Verify'
+                      : step === 'otp'
+                        ? 'Verify'
+                        : 'Submit Documents'
                     }
                   </span>
                 )}

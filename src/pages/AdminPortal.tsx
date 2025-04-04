@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Users, BarChart, ShoppingBag, Settings, Database, Shield, FileText } from 'lucide-react';
+import { Users, BarChart, ShoppingBag, Settings, Database, Shield, FileText, Check, X, BadgeHelp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -43,7 +43,8 @@ const AdminPortal = () => {
   const tabs = [
     { id: 'dashboard', name: 'Dashboard', icon: <BarChart className="w-5 h-5 mr-2" /> },
     { id: 'users', name: 'User Management', icon: <Users className="w-5 h-5 mr-2" /> },
-    { id: 'doctors', name: 'Doctors', icon: <Users className="w-5 h-5 mr-2" /> },
+    { id: 'doctors', name: 'Doctors', icon: <BadgeHelp className="w-5 h-5 mr-2" /> },
+    { id: 'verifications', name: 'Doctor Verifications', icon: <FileText className="w-5 h-5 mr-2" /> },
     { id: 'products', name: 'Products', icon: <ShoppingBag className="w-5 h-5 mr-2" /> },
     { id: 'reports', name: 'Reports', icon: <FileText className="w-5 h-5 mr-2" /> },
     { id: 'database', name: 'Database', icon: <Database className="w-5 h-5 mr-2" /> },
@@ -67,6 +68,71 @@ const AdminPortal = () => {
     { id: 4, name: 'Dr. Lisa Wong', email: 'lisa@example.com', role: 'Doctor', joinDate: '2023-04-13' },
     { id: 5, name: 'Robert Davis', email: 'robert@example.com', role: 'User', joinDate: '2023-04-12' }
   ];
+
+  // Mock doctor verification requests
+  const verificationRequests = [
+    { 
+      id: 1, 
+      name: 'Dr. Michael Johnson', 
+      email: 'michael@example.com', 
+      specialization: 'Orthodontist',
+      experience: '8 years',
+      submittedDate: '2023-04-15',
+      status: 'pending'
+    },
+    { 
+      id: 2, 
+      name: 'Dr. Emma Williams', 
+      email: 'emma@example.com', 
+      specialization: 'Periodontist',
+      experience: '5 years',
+      submittedDate: '2023-04-14',
+      status: 'pending'
+    },
+    { 
+      id: 3, 
+      name: 'Dr. James Brown', 
+      email: 'james@example.com', 
+      specialization: 'Endodontist',
+      experience: '12 years',
+      submittedDate: '2023-04-13',
+      status: 'approved'
+    },
+    { 
+      id: 4, 
+      name: 'Dr. Sophia Garcia', 
+      email: 'sophia@example.com', 
+      specialization: 'Pediatric Dentist',
+      experience: '7 years',
+      submittedDate: '2023-04-12',
+      status: 'rejected'
+    }
+  ];
+
+  const handleApproveDoctor = (id: number) => {
+    toast({
+      title: "Doctor Approved",
+      description: "The doctor has been verified and can now access the platform.",
+    });
+    // In a real application, you would update the database here
+  };
+
+  const handleRejectDoctor = (id: number) => {
+    toast({
+      title: "Doctor Rejected",
+      description: "The doctor's verification request has been rejected.",
+      variant: "destructive"
+    });
+    // In a real application, you would update the database here
+  };
+
+  const handleViewDocuments = (id: number) => {
+    toast({
+      title: "Viewing Documents",
+      description: "Opening document viewer...",
+    });
+    // In a real application, this would open a modal with the doctor's documents
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -181,6 +247,85 @@ const AdminPortal = () => {
                 <div className="bg-white rounded-xl shadow-sm p-6">
                   <h2 className="text-xl font-semibold mb-6">Doctor Management</h2>
                   <p className="text-gray-600">Manage doctors, approvals, and verifications.</p>
+                </div>
+              )}
+              
+              {activeTab === 'verifications' && (
+                <div className="bg-white rounded-xl shadow-sm p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Doctor Verification Requests</h2>
+                    <div className="flex gap-2">
+                      <select className="text-sm border rounded-md px-2 py-1">
+                        <option value="all">All Requests</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="px-4 py-3 text-left font-medium text-gray-700">Name</th>
+                          <th className="px-4 py-3 text-left font-medium text-gray-700">Email</th>
+                          <th className="px-4 py-3 text-left font-medium text-gray-700">Specialization</th>
+                          <th className="px-4 py-3 text-left font-medium text-gray-700">Experience</th>
+                          <th className="px-4 py-3 text-left font-medium text-gray-700">Date</th>
+                          <th className="px-4 py-3 text-left font-medium text-gray-700">Status</th>
+                          <th className="px-4 py-3 text-left font-medium text-gray-700">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {verificationRequests.map((request) => (
+                          <tr key={request.id} className="border-b">
+                            <td className="px-4 py-4 font-medium">{request.name}</td>
+                            <td className="px-4 py-4">{request.email}</td>
+                            <td className="px-4 py-4">{request.specialization}</td>
+                            <td className="px-4 py-4">{request.experience}</td>
+                            <td className="px-4 py-4">{request.submittedDate}</td>
+                            <td className="px-4 py-4">
+                              <span className={cn(
+                                "px-2 py-1 rounded-full text-xs",
+                                request.status === 'approved' ? "bg-green-100 text-green-800" : 
+                                request.status === 'rejected' ? "bg-red-100 text-red-800" : 
+                                "bg-yellow-100 text-yellow-800"
+                              )}>
+                                {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                              </span>
+                            </td>
+                            <td className="px-4 py-4">
+                              <div className="flex space-x-2">
+                                <button 
+                                  className="text-blue-600 hover:text-blue-700"
+                                  onClick={() => handleViewDocuments(request.id)}
+                                >
+                                  View
+                                </button>
+                                {request.status === 'pending' && (
+                                  <>
+                                    <button 
+                                      className="text-green-600 hover:text-green-700"
+                                      onClick={() => handleApproveDoctor(request.id)}
+                                    >
+                                      <Check size={16} />
+                                    </button>
+                                    <button 
+                                      className="text-red-600 hover:text-red-700"
+                                      onClick={() => handleRejectDoctor(request.id)}
+                                    >
+                                      <X size={16} />
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
               
