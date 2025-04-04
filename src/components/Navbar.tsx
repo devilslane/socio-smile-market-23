@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart, User, UserCog, BadgeHelp, LogOut } from 'lucide-react';
@@ -16,7 +15,6 @@ const Navbar = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check authentication status from localStorage
     const checkAuth = () => {
       const authStatus = localStorage.getItem('isAuthenticated') === 'true';
       const storedName = localStorage.getItem('userName') || 'User';
@@ -27,9 +25,8 @@ const Navbar = () => {
       setUserRole(storedRole);
     };
     
-    checkAuth(); // Initial check
+    checkAuth();
     
-    // Setup event listener for storage changes
     window.addEventListener('storage', checkAuth);
     
     return () => {
@@ -52,7 +49,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
@@ -100,7 +96,6 @@ const Navbar = () => {
     { name: 'About', path: '/about' },
   ];
 
-  // Choose appropriate nav links based on role
   let activeLinks = navLinks;
   if (isAuthenticated) {
     if (userRole === 'doctor') {
@@ -123,7 +118,6 @@ const Navbar = () => {
     >
       <div className="container-custom">
         <nav className="flex items-center justify-between">
-          {/* Logo */}
           <Link 
             to="/" 
             className="text-2xl font-bold text-sociodent-700 transition-all duration-300 hover:text-sociodent-500"
@@ -133,7 +127,6 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
             {activeLinks.map((link) => (
               <Link
@@ -151,7 +144,6 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Desktop Auth/Cart Buttons */}
           <div className="hidden lg:flex items-center gap-4">
             {isAuthenticated ? (
               <>
@@ -162,25 +154,6 @@ const Navbar = () => {
                   </span>
                 </Link>
                 <div className="flex items-center gap-2">
-                  <Link 
-                    to={
-                      userRole === 'doctor' 
-                        ? '/doctor-portal' 
-                        : userRole === 'admin' 
-                          ? '/admin-portal' 
-                          : '/dashboard'
-                    } 
-                    className="button-secondary py-2"
-                  >
-                    {userRole === 'doctor' ? (
-                      <BadgeHelp size={16} className="mr-1" />
-                    ) : userRole === 'admin' ? (
-                      <UserCog size={16} className="mr-1" />
-                    ) : (
-                      <User size={16} className="mr-1" />
-                    )}
-                    {userName}
-                  </Link>
                   <button 
                     onClick={handleLogout}
                     className="p-2 text-gray-700 hover:text-red-600 transition-colors"
@@ -202,7 +175,6 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="lg:hidden p-2 text-gray-700 focus:outline-none"
             onClick={() => setIsOpen(!isOpen)}
@@ -212,7 +184,6 @@ const Navbar = () => {
           </button>
         </nav>
 
-        {/* Mobile Menu */}
         <div
           className={cn(
             'fixed inset-0 bg-white z-40 pt-20 pb-6 px-6 flex flex-col lg:hidden transition-all duration-300 ease-in-out',
