@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -21,7 +22,7 @@ const Footer = () => {
               <img 
                 src="/logo.png" 
                 alt="SocioDent Logo" 
-                className="h-12 w-auto"
+                className="h-12 w-auto object-contain"
               />
             </Link>
             <p className="text-gray-600 text-sm max-w-xs">

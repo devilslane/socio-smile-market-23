@@ -125,7 +125,7 @@ const Navbar = () => {
             <img 
               src="/logo.png" 
               alt="SocioDent Logo" 
-              className="h-10 w-auto"
+              className="h-10 w-auto object-contain"
             />
           </Link>
 
@@ -185,76 +185,6 @@ const Navbar = () => {
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </nav>
-
-        <div
-          className={cn(
-            'fixed inset-0 bg-white z-40 pt-20 pb-6 px-6 flex flex-col lg:hidden transition-all duration-300 ease-in-out',
-            isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'
-          )}
-        >
-          <div className="flex flex-col gap-6">
-            {activeLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={cn(
-                  'text-lg font-medium py-2 border-b border-gray-100 transition-all',
-                  location.pathname === link.path
-                    ? 'text-sociodent-600'
-                    : 'text-gray-700'
-                )}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-auto space-y-4">
-            {isAuthenticated ? (
-              <>
-                <Link to="/checkout" className="flex items-center gap-2 py-3">
-                  <ShoppingCart size={20} />
-                  <span>Cart (0)</span>
-                </Link>
-                <Link 
-                  to={
-                    userRole === 'doctor' 
-                      ? '/doctor-portal' 
-                      : userRole === 'admin' 
-                        ? '/admin-portal' 
-                        : '/dashboard'
-                  } 
-                  className="button-primary w-full flex justify-center items-center"
-                >
-                  {userRole === 'doctor' ? (
-                    <BadgeHelp size={16} className="mr-2" />
-                  ) : userRole === 'admin' ? (
-                    <UserCog size={16} className="mr-2" />
-                  ) : (
-                    <User size={16} className="mr-2" />
-                  )}
-                  {userName}'s {userRole === 'doctor' ? 'Portal' : userRole === 'admin' ? 'Admin' : 'Dashboard'}
-                </Link>
-                <button 
-                  onClick={handleLogout}
-                  className="button-secondary w-full flex justify-center items-center"
-                >
-                  <LogOut size={16} className="mr-2" />
-                  Log out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/auth?mode=login" className="button-secondary w-full flex justify-center">
-                  Log in
-                </Link>
-                <Link to="/auth?mode=signup" className="button-primary w-full flex justify-center">
-                  Sign up
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
       </div>
     </header>
   );

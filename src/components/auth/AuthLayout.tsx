@@ -23,7 +23,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                 <img 
                   src="/logo.png" 
                   alt="SocioDent Logo" 
-                  className="h-12 mx-auto"
+                  className="h-12 mx-auto object-contain"
                 />
               </Link>
             </div>
