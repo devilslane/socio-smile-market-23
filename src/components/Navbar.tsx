@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart, User, UserCog, BadgeHelp, LogOut } from 'lucide-react';
@@ -123,7 +124,7 @@ const Navbar = () => {
             className="flex items-center gap-2 text-2xl font-bold text-sociodent-700 transition-all duration-300 hover:text-sociodent-500"
           >
             <img 
-              src="/logo.png" 
+              src="/assets/logo.png" 
               alt="SocioDent Logo" 
               className="h-10 w-auto object-contain"
             />

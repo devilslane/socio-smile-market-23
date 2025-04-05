@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -20,7 +19,7 @@ const Footer = () => {
           <div className="space-y-4">
             <Link to="/" className="inline-block">
               <img 
-                src="/logo.png" 
+                src="/assets/logo.png" 
                 alt="SocioDent Logo" 
                 className="h-12 w-auto object-contain"
               />
