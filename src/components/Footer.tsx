@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -18,8 +17,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 py-16">
           {/* Company Info */}
           <div className="space-y-4">
-            <Link to="/" className="text-2xl font-bold text-sociodent-700">
-              SocioDent
+            <Link to="/" className="inline-block">
+              <img 
+                src="/logo.png" 
+                alt="SocioDent Logo" 
+                className="h-12 w-auto"
+              />
             </Link>
             <p className="text-gray-600 text-sm max-w-xs">
               Transforming dental care with technology. Book appointments, shop products, and access dental education all in one place.

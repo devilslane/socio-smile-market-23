@@ -120,11 +120,13 @@ const Navbar = () => {
         <nav className="flex items-center justify-between">
           <Link 
             to="/" 
-            className="text-2xl font-bold text-sociodent-700 transition-all duration-300 hover:text-sociodent-500"
+            className="flex items-center gap-2 text-2xl font-bold text-sociodent-700 transition-all duration-300 hover:text-sociodent-500"
           >
-            <span className="flex items-center gap-2">
-              SocioDent
-            </span>
+            <img 
+              src="/logo.png" 
+              alt="SocioDent Logo" 
+              className="h-10 w-auto"
+            />
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">

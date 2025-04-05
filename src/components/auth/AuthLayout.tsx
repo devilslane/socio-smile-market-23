@@ -19,8 +19,12 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
           
           <div className="glass-card rounded-2xl p-8 border border-white/50 shadow-glass">
             <div className="text-center mb-6">
-              <Link to="/" className="inline-block text-2xl font-bold text-sociodent-700">
-                SocioDent
+              <Link to="/" className="inline-block">
+                <img 
+                  src="/logo.png" 
+                  alt="SocioDent Logo" 
+                  className="h-12 mx-auto"
+                />
               </Link>
             </div>
             
