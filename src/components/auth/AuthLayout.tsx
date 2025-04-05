@@ -21,7 +21,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             <div className="text-center mb-6">
               <Link to="/" className="inline-block">
                 <img 
-                  src="/assets/logo.png" 
+                  src="/logo.png" 
                   alt="SocioDent Logo" 
                   className="h-12 mx-auto object-contain"
                 />

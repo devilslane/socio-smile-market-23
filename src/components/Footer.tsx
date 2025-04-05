@@ -19,7 +19,7 @@ const Footer = () => {
           <div className="space-y-4">
             <Link to="/" className="inline-block">
               <img 
-                src="/assets/logo.png" 
+                src="/logo.png" 
                 alt="SocioDent Logo" 
                 className="h-12 w-auto object-contain"
               />
