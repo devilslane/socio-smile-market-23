@@ -40,6 +40,9 @@ export default {
         'neu': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
         'glass': '0 4px 20px rgba(0, 0, 0, 0.08)'
       },
+      borderColor: {
+        DEFAULT: 'hsl(var(--border))'
+      }
     },
   },
   plugins: [],
