@@ -22,7 +22,7 @@ const queryClient = new QueryClient();
 const getBasename = () => {
   // When deployed to GitHub Pages, the site is served from the repository name path
   // In development, we don't need a basename
-  return process.env.NODE_ENV === 'production' ? '/socio-smile-market' : '/';
+  return process.env.NODE_ENV === 'production' ? '/socio-smile-market-23' : '/';
 };
 
 const App = () => (
