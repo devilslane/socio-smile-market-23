@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { User, BadgeHelp, UserCog } from 'lucide-react';
+import { User, UserCog } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface RoleSelectorProps {
@@ -18,7 +18,7 @@ const RoleSelector: React.FC<RoleSelectorProps> = ({ role }) => {
     { 
       name: 'Doctor', 
       role: 'doctor', 
-      icon: <BadgeHelp size={20} className="mr-2" />
+      icon: <img src="/lovable-uploads/3bd4e8b5-7c83-45c7-b8e5-620dddd8d1ba.png" alt="Doctor" className="w-5 h-5 mr-2" />
     },
     { 
       name: 'Admin', 

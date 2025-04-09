@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AuthLayout from '@/components/auth/AuthLayout';
@@ -29,7 +28,6 @@ const Auth = () => {
   const [role, setRole] = useState(roleParam);
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   
-  // Doctor specific fields
   const [specialization, setSpecialization] = useState('');
   const [experience, setExperience] = useState('');
   const [bio, setBio] = useState('');
@@ -39,7 +37,6 @@ const Auth = () => {
 
   const { toast } = useToast();
 
-  // Update role when URL param changes
   useEffect(() => {
     setRole(roleParam);
   }, [roleParam]);
@@ -48,7 +45,6 @@ const Auth = () => {
     e.preventDefault();
     
     if (step === 'credentials') {
-      // Validate form
       if (mode === 'signup' && !name.trim()) {
         toast({
           title: "Error",
@@ -94,10 +90,8 @@ const Auth = () => {
         return;
       }
 
-      // Proceed based on auth type
       if (authType === 'phone') {
         setIsLoading(true);
-        // Simulate API call to send OTP
         setTimeout(() => {
           setIsLoading(false);
           setStep('otp');
@@ -107,9 +101,7 @@ const Auth = () => {
           });
         }, 1500);
       } else {
-        // Email login/signup
         setIsLoading(true);
-        // Simulate authentication API call
         setTimeout(() => {
           setIsLoading(false);
           
@@ -121,7 +113,6 @@ const Auth = () => {
                 description: "Please complete your profile with professional details",
               });
             } else {
-              // Regular user signup - complete
               localStorage.setItem('isAuthenticated', 'true');
               localStorage.setItem('userName', name);
               localStorage.setItem('userRole', role);
@@ -134,9 +125,8 @@ const Auth = () => {
               navigate('/');
             }
           } else {
-            // Login successful
             localStorage.setItem('isAuthenticated', 'true');
-            localStorage.setItem('userName', 'Demo User'); // In a real app, this would come from the API
+            localStorage.setItem('userName', 'Demo User');
             localStorage.setItem('userRole', role);
             
             toast({
@@ -144,7 +134,6 @@ const Auth = () => {
               description: "Welcome back!",
             });
             
-            // Redirect based on role
             if (role === 'doctor') {
               navigate('/doctor-portal');
             } else if (role === 'admin') {
@@ -156,7 +145,6 @@ const Auth = () => {
         }, 1500);
       }
     } else if (step === 'otp') {
-      // Validate OTP
       if (!otp || otp.length < 4) {
         toast({
           title: "Error",
@@ -167,7 +155,6 @@ const Auth = () => {
       }
       
       setIsLoading(true);
-      // Simulate OTP verification
       setTimeout(() => {
         setIsLoading(false);
         
@@ -175,7 +162,6 @@ const Auth = () => {
           if (role === 'doctor') {
             setStep('documents');
           } else {
-            // Complete signup
             localStorage.setItem('isAuthenticated', 'true');
             localStorage.setItem('userName', name || phone);
             localStorage.setItem('userRole', role);
@@ -188,7 +174,6 @@ const Auth = () => {
             navigate('/');
           }
         } else {
-          // Login successful
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('userName', 'Demo User');
           localStorage.setItem('userRole', role);
@@ -198,7 +183,6 @@ const Auth = () => {
             description: "Welcome back!",
           });
           
-          // Redirect based on role
           if (role === 'doctor') {
             navigate('/doctor-portal');
           } else if (role === 'admin') {
@@ -209,7 +193,6 @@ const Auth = () => {
         }
       }, 1500);
     } else if (step === 'documents') {
-      // Validate doctor documents
       if (!specialization || !experience) {
         toast({
           title: "Error",
@@ -229,7 +212,6 @@ const Auth = () => {
       }
       
       setIsLoading(true);
-      // Simulate document submission
       setTimeout(() => {
         setIsLoading(false);
         
@@ -238,7 +220,6 @@ const Auth = () => {
           description: "Your profile is under review. We'll notify you once approved.",
         });
         
-        // Since documents are submitted but pending review
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('userName', name || email);
         localStorage.setItem('userRole', 'doctor_pending');
@@ -275,7 +256,6 @@ const Auth = () => {
       </div>
       
       <form onSubmit={handleSubmit}>
-        {/* Role Selector - Only show for login */}
         {mode === 'login' && (
           <RoleSelector role={role} />
         )}
@@ -332,7 +312,7 @@ const Auth = () => {
         />
       </form>
       
-      <FormFooter mode={mode} />
+      <FormFooter mode={mode} role={role} />
     </AuthLayout>
   );
 };
