@@ -18,12 +18,19 @@ import AdminPortal from "./pages/AdminPortal";
 
 const queryClient = new QueryClient();
 
+// Get the basename from the environment or use a default for GitHub Pages
+const getBasename = () => {
+  // When deployed to GitHub Pages, the site is served from the repository name path
+  // In development, we don't need a basename
+  return process.env.NODE_ENV === 'production' ? '/socio-smile-market' : '/';
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={getBasename()}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/auth" element={<Auth />} />
