@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -30,21 +31,21 @@ const Footer = () => {
             <div className="flex space-x-4 pt-2">
               <a 
                 href="#" 
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-sociodent-100 hover:text-sociodent-600 transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-coral-500/10 hover:text-coral-500 transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter size={16} />
               </a>
               <a 
                 href="#" 
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-sociodent-100 hover:text-sociodent-600 transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-coral-500/10 hover:text-coral-500 transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook size={16} />
               </a>
               <a 
                 href="#" 
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-sociodent-100 hover:text-sociodent-600 transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 text-gray-600 hover:bg-coral-500/10 hover:text-coral-500 transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram size={16} />
@@ -69,7 +70,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <Link 
                     to={link.path}
-                    className="text-gray-600 hover:text-sociodent-600 transition-colors text-sm inline-flex items-center"
+                    className="text-gray-600 hover:text-coral-500 transition-colors text-sm inline-flex items-center"
                   >
                     <span>{link.name}</span>
                     <ArrowRight size={14} className="ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
@@ -86,17 +87,17 @@ const Footer = () => {
             </h3>
             <ul className="space-y-3">
               <li className="flex items-start">
-                <MapPin size={18} className="text-sociodent-500 mt-0.5 mr-3 flex-shrink-0" />
+                <MapPin size={18} className="text-coral-500 mt-0.5 mr-3 flex-shrink-0" />
                 <span className="text-gray-600 text-sm">
                   123 Dental Avenue, Health District, CA 92603
                 </span>
               </li>
               <li className="flex items-center">
-                <Phone size={18} className="text-sociodent-500 mr-3 flex-shrink-0" />
+                <Phone size={18} className="text-coral-500 mr-3 flex-shrink-0" />
                 <span className="text-gray-600 text-sm">+1 (555) 123-4567</span>
               </li>
               <li className="flex items-center">
-                <Mail size={18} className="text-sociodent-500 mr-3 flex-shrink-0" />
+                <Mail size={18} className="text-coral-500 mr-3 flex-shrink-0" />
                 <span className="text-gray-600 text-sm">info@sociodent.com</span>
               </li>
             </ul>
@@ -120,7 +121,7 @@ const Footer = () => {
                 />
                 <button 
                   type="submit"
-                  className="w-full bg-sociodent-500 text-white py-2 px-4 rounded-lg hover:bg-sociodent-600 transition-colors text-sm font-medium"
+                  className="w-full bg-coral-500 text-white py-2 px-4 rounded-lg hover:bg-coral-600 transition-colors text-sm font-medium"
                 >
                   Subscribe
                 </button>
@@ -135,10 +136,10 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} SocioDent. All rights reserved.
           </p>
           <div className="mt-2 md:mt-0 flex justify-center md:justify-end space-x-6">
-            <Link to="/privacy" className="text-gray-600 hover:text-sociodent-600 transition-colors text-sm">
+            <Link to="/privacy" className="text-gray-600 hover:text-coral-500 transition-colors text-sm">
               Privacy Policy
             </Link>
-            <Link to="/terms" className="text-gray-600 hover:text-sociodent-600 transition-colors text-sm">
+            <Link to="/terms" className="text-gray-600 hover:text-coral-500 transition-colors text-sm">
               Terms of Service
             </Link>
           </div>

@@ -23,7 +23,7 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 199 89% 48%;
+    --accent: 195 83% 45%;
     --accent-foreground: 222 47% 11.2%;
 
     --destructive: 0 84% 60%;
@@ -108,7 +108,7 @@
   }
   
   .button-primary {
-    @apply px-6 py-3 bg-sociodent-500 text-white rounded-full font-medium transform transition-all duration-300 hover:bg-sociodent-600 active:scale-95 focus:outline-none focus:ring-2 focus:ring-sociodent-400 focus:ring-offset-2;
+    @apply px-6 py-3 bg-coral-500 text-white rounded-full font-medium transform transition-all duration-300 hover:bg-coral-600 active:scale-95 focus:outline-none focus:ring-2 focus:ring-coral-500/50 focus:ring-offset-2;
   }
   
   .button-secondary {

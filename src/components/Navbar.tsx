@@ -121,12 +121,12 @@ const Navbar = () => {
         <nav className="flex items-center justify-between">
           <Link 
             to="/" 
-            className="flex items-center gap-2 text-2xl font-bold text-sociodent-700 transition-all duration-300 hover:text-sociodent-500"
+            className="flex items-center gap-2 text-2xl font-bold transition-all duration-300"
           >
             <img 
               src="/logo.png" 
               alt="SocioDent Logo" 
-              className="h-10 w-auto object-contain"
+              className="h-12 w-auto object-contain"
             />
           </Link>
 
@@ -138,7 +138,7 @@ const Navbar = () => {
                 className={cn(
                   'text-sm font-medium transition-all duration-300 hover:text-sociodent-600',
                   location.pathname === link.path
-                    ? 'text-sociodent-600'
+                    ? 'text-coral-500'
                     : 'text-gray-700'
                 )}
               >
@@ -152,7 +152,7 @@ const Navbar = () => {
               <>
                 <Link to="/checkout" className="relative p-2 text-gray-700 hover:text-sociodent-600 transition-colors">
                   <ShoppingCart size={20} />
-                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs text-white bg-sociodent-500 rounded-full">
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs text-white bg-coral-500 rounded-full">
                     0
                   </span>
                 </Link>

@@ -1,238 +1,285 @@
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
-
-// Import components
+import { useLocation, useNavigate } from 'react-router-dom';
 import AuthLayout from '@/components/auth/AuthLayout';
-import RoleSelector from '@/components/auth/RoleSelector';
 import CredentialsForm from '@/components/auth/CredentialsForm';
 import OtpForm from '@/components/auth/OtpForm';
-import DoctorDocumentsForm from '@/components/auth/DoctorDocumentsForm';
-import SubmitButton from '@/components/auth/SubmitButton';
 import FormFooter from '@/components/auth/FormFooter';
+import RoleSelector from '@/components/auth/RoleSelector';
+import SubmitButton from '@/components/auth/SubmitButton';
+import DoctorDocumentsForm from '@/components/auth/DoctorDocumentsForm';
+import { useToast } from '@/hooks/use-toast';
 
 const Auth = () => {
-  const [searchParams] = useSearchParams();
-  const mode = searchParams.get('mode') || 'login';
-  const role = searchParams.get('role') || 'user';
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const mode = searchParams.get('mode') || 'login';
+  const roleParam = searchParams.get('role') || 'user';
 
-  const [authType, setAuthType] = useState<'email' | 'phone'>('email');
   const [isLoading, setIsLoading] = useState(false);
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+  const [step, setStep] = useState<'credentials' | 'otp' | 'documents'>('credentials');
   
+  const [authType, setAuthType] = useState<'email' | 'phone'>('email');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'credentials' | 'otp' | 'documents'>('credentials');
+  const [role, setRole] = useState(roleParam);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   
-  const [licenseFile, setLicenseFile] = useState<File | null>(null);
-  const [certificateFile, setCertificateFile] = useState<File | null>(null);
-  const [idFile, setIdFile] = useState<File | null>(null);
+  // Doctor specific fields
   const [specialization, setSpecialization] = useState('');
   const [experience, setExperience] = useState('');
   const [bio, setBio] = useState('');
+  const [licenseFile, setLicenseFile] = useState<File | null>(null);
+  const [certificateFile, setCertificateFile] = useState<File | null>(null);
+  const [idFile, setIdFile] = useState<File | null>(null);
 
+  const { toast } = useToast();
+
+  // Update role when URL param changes
   useEffect(() => {
-    setEmail('');
-    setPhone('');
-    setPassword('');
-    setName('');
-    setOtp('');
-    setStep('credentials');
-    setIsCaptchaVerified(false);
-    setLicenseFile(null);
-    setCertificateFile(null);
-    setIdFile(null);
-    setSpecialization('');
-    setExperience('');
-    setBio('');
-    
-    const lastUsedPhone = localStorage.getItem('lastUsedPhone');
-    if (lastUsedPhone) {
-      setPhone(lastUsedPhone);
-    }
-  }, [mode, role]);
-
-  const handleCaptchaVerify = (isVerified: boolean) => {
-    setIsCaptchaVerified(isVerified);
-  };
-
-  const redirectBasedOnRole = (userRole: string) => {
-    console.log("Redirecting user with role:", userRole);
-    
-    if (userRole === 'doctor') {
-      navigate('/doctor-portal');
-    } else if (userRole === 'admin') {
-      navigate('/admin-portal');
-    } else {
-      navigate('/dashboard');
-    }
-  };
-
-  const handleBackToCredentials = () => {
-    setStep('credentials');
-    setOtp('');
-  };
+    setRole(roleParam);
+  }, [roleParam]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (step === 'credentials') {
+      // Validate form
+      if (mode === 'signup' && !name.trim()) {
+        toast({
+          title: "Error",
+          description: "Please enter your name",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      if (authType === 'email' && !email.trim()) {
+        toast({
+          title: "Error",
+          description: "Please enter your email address",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      if (authType === 'phone' && !phone.trim()) {
+        toast({
+          title: "Error",
+          description: "Please enter your phone number",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      if (authType === 'email' && !password.trim()) {
+        toast({
+          title: "Error",
+          description: "Please enter your password",
+          variant: "destructive"
+        });
+        return;
+      }
+
       if (!isCaptchaVerified) {
         toast({
-          title: "Captcha verification required",
+          title: "Error",
           description: "Please complete the captcha verification",
           variant: "destructive"
         });
         return;
       }
-      
-      if (authType === 'email' && (!email || !password || (mode === 'signup' && !name))) {
-        toast({
-          title: "Missing information",
-          description: "Please fill in all required fields.",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      if (authType === 'phone' && !phone) {
-        toast({
-          title: "Missing information",
-          description: "Please enter your phone number.",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      if (authType === 'phone' && phone) {
-        localStorage.setItem('lastUsedPhone', phone);
-      }
-      
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        
-        if (authType === 'phone') {
+
+      // Proceed based on auth type
+      if (authType === 'phone') {
+        setIsLoading(true);
+        // Simulate API call to send OTP
+        setTimeout(() => {
+          setIsLoading(false);
+          setStep('otp');
           toast({
             title: "OTP Sent",
-            description: "A verification code has been sent to your phone.",
+            description: `A verification code has been sent to ${phone}`,
           });
-          setStep('otp');
-        } else {
-          if (mode === 'signup' && role === 'doctor') {
-            toast({
-              title: "Complete your profile",
-              description: "Please submit your documents for verification.",
-            });
-            setStep('documents');
+        }, 1500);
+      } else {
+        // Email login/signup
+        setIsLoading(true);
+        // Simulate authentication API call
+        setTimeout(() => {
+          setIsLoading(false);
+          
+          if (mode === 'signup') {
+            if (role === 'doctor') {
+              setStep('documents');
+              toast({
+                title: "Account Created",
+                description: "Please complete your profile with professional details",
+              });
+            } else {
+              // Regular user signup - complete
+              localStorage.setItem('isAuthenticated', 'true');
+              localStorage.setItem('userName', name);
+              localStorage.setItem('userRole', role);
+              
+              toast({
+                title: "Success",
+                description: "Your account has been created successfully",
+              });
+              
+              navigate('/');
+            }
           } else {
-            completeAuthentication();
+            // Login successful
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('userName', 'Demo User'); // In a real app, this would come from the API
+            localStorage.setItem('userRole', role);
+            
+            toast({
+              title: "Login Successful",
+              description: "Welcome back!",
+            });
+            
+            // Redirect based on role
+            if (role === 'doctor') {
+              navigate('/doctor-portal');
+            } else if (role === 'admin') {
+              navigate('/admin-portal');
+            } else {
+              navigate('/dashboard');
+            }
           }
-        }
-      }, 1000);
+        }, 1500);
+      }
     } else if (step === 'otp') {
+      // Validate OTP
       if (!otp || otp.length < 4) {
         toast({
-          title: "Invalid OTP",
-          description: "Please enter a valid verification code.",
+          title: "Error",
+          description: "Please enter a valid verification code",
           variant: "destructive"
         });
         return;
       }
       
       setIsLoading(true);
+      // Simulate OTP verification
       setTimeout(() => {
         setIsLoading(false);
         
-        if (mode === 'signup' && role === 'doctor') {
-          toast({
-            title: "Complete your profile",
-            description: "Please submit your documents for verification.",
-          });
-          setStep('documents');
+        if (mode === 'signup') {
+          if (role === 'doctor') {
+            setStep('documents');
+          } else {
+            // Complete signup
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('userName', name || phone);
+            localStorage.setItem('userRole', role);
+            
+            toast({
+              title: "Success",
+              description: "Your account has been created successfully",
+            });
+            
+            navigate('/');
+          }
         } else {
-          completeAuthentication();
+          // Login successful
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userName', 'Demo User');
+          localStorage.setItem('userRole', role);
+          
+          toast({
+            title: "Login Successful",
+            description: "Welcome back!",
+          });
+          
+          // Redirect based on role
+          if (role === 'doctor') {
+            navigate('/doctor-portal');
+          } else if (role === 'admin') {
+            navigate('/admin-portal');
+          } else {
+            navigate('/dashboard');
+          }
         }
-      }, 1000);
+      }, 1500);
     } else if (step === 'documents') {
-      if (!licenseFile || !certificateFile || !idFile || !specialization || !experience) {
+      // Validate doctor documents
+      if (!specialization || !experience) {
         toast({
-          title: "Missing information",
-          description: "Please upload all required documents and fill in all fields.",
+          title: "Error",
+          description: "Please fill all required fields",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      if (!licenseFile || !certificateFile || !idFile) {
+        toast({
+          title: "Error",
+          description: "Please upload all required documents",
           variant: "destructive"
         });
         return;
       }
       
       setIsLoading(true);
+      // Simulate document submission
       setTimeout(() => {
         setIsLoading(false);
         
         toast({
-          title: "Documents submitted",
-          description: "Your documents have been submitted for verification. You will be notified when your account is approved.",
+          title: "Documents Submitted",
+          description: "Your profile is under review. We'll notify you once approved.",
         });
-
-        localStorage.setItem('doctorVerificationStatus', 'pending');
         
-        localStorage.setItem('userRole', role);
+        // Since documents are submitted but pending review
         localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userName', name);
+        localStorage.setItem('userName', name || email);
+        localStorage.setItem('userRole', 'doctor_pending');
         
-        navigate('/dashboard');
-      }, 1000);
+        navigate('/');
+      }, 2000);
     }
   };
-  
-  const completeAuthentication = () => {
-    localStorage.setItem('userRole', role);
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('userName', mode === 'signup' ? name : 'User');
-    
-    toast({
-      title: mode === 'login' ? "Welcome back!" : "Account created!",
-      description: mode === 'login' 
-        ? "You've successfully logged in." 
-        : "Your account has been created successfully.",
-    });
 
-    redirectBasedOnRole(role);
+  const handleBackFromOtp = () => {
+    setStep('credentials');
+  };
+  
+  const handleBackFromDocuments = () => {
+    setStep('credentials');
+  };
+
+  const handleCaptchaVerify = (isVerified: boolean) => {
+    setIsCaptchaVerified(isVerified);
   };
 
   return (
     <AuthLayout>
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          {step === 'credentials' 
-            ? (mode === 'login' ? 'Welcome Back' : 'Create Your Account') 
-            : step === 'otp'
-              ? 'Verify Your Phone'
-              : 'Complete Your Profile'
-          }
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">
+          {mode === 'login' ? 'Welcome Back' : 'Create an Account'}
         </h1>
         <p className="text-gray-600">
-          {step === 'credentials'
-            ? (mode === 'login' 
-              ? 'Sign in to access your account' 
-              : 'Join SocioDent for better dental care')
-            : step === 'otp'
-              ? 'Enter the code we sent to your phone'
-              : 'Upload your credentials for verification'
+          {mode === 'login' 
+            ? 'Sign in to continue to your account' 
+            : 'Fill in your details to get started'
           }
         </p>
       </div>
-
-      {step === 'credentials' && mode === 'login' && (
-        <RoleSelector role={role} />
-      )}
       
       <form onSubmit={handleSubmit}>
+        {/* Role Selector - Only show for login */}
+        {mode === 'login' && (
+          <RoleSelector role={role} />
+        )}
+        
         {step === 'credentials' && (
           <CredentialsForm
             mode={mode}
@@ -254,7 +301,7 @@ const Auth = () => {
           <OtpForm
             otp={otp}
             setOtp={setOtp}
-            onBack={handleBackToCredentials}
+            onBack={handleBackFromOtp}
             authType={authType}
           />
         )}
@@ -273,7 +320,7 @@ const Auth = () => {
             setCertificateFile={setCertificateFile}
             idFile={idFile}
             setIdFile={setIdFile}
-            onBack={handleBackToCredentials}
+            onBack={handleBackFromDocuments}
           />
         )}
         
@@ -285,9 +332,7 @@ const Auth = () => {
         />
       </form>
       
-      {step === 'credentials' && (
-        <FormFooter mode={mode} />
-      )}
+      <FormFooter mode={mode} />
     </AuthLayout>
   );
 };

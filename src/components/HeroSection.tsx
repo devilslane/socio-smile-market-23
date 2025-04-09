@@ -32,7 +32,7 @@ const HeroSection = () => {
       <div className="container-custom relative">
         {/* Background Elements */}
         <div className="absolute top-0 right-0 -mr-16 mt-16 w-64 h-64 bg-sociodent-100 rounded-full blur-3xl opacity-40 animate-float"></div>
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-sociodent-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-coral-500/10 rounded-full blur-3xl opacity-30"></div>
         
         <div className="max-w-5xl mx-auto">
           {/* Chip */}
@@ -49,7 +49,7 @@ const HeroSection = () => {
             style={{ transitionDelay: '100ms' }}
           >
             Your Complete Dental <br className="hidden md:block" />
-            <span className="text-sociodent-600">Care Solution</span>
+            <span className="text-coral-500">Care Solution</span>
           </h1>
           
           {/* Subheading */}
