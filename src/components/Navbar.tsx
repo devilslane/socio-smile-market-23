@@ -124,8 +124,8 @@ const Navbar = () => {
             className="flex items-center gap-2 text-2xl font-bold transition-all duration-300"
           >
             <img 
-              src="/public/logo.png" 
-              alt="SocioDent Logo Test" 
+              src="/logo.png" 
+              alt="SocioDent Logo" 
               className="h-12 w-auto object-contain"
             />
           </Link>
