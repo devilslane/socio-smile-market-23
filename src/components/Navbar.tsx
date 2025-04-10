@@ -125,7 +125,7 @@ const Navbar = () => {
           >
             <img 
               src="/public/logo.png" 
-              alt="SocioDent Logo" 
+              alt="SocioDent Logo Test" 
               className="h-12 w-auto object-contain"
             />
           </Link>
