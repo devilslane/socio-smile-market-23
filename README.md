@@ -1,3 +1,5 @@
+🚀 **Live Demo**: [Click here to view the site](https://saiaravindan21-droid.github.io/socio-smile-market-23)
+
 # Welcome to your Lovable project
 
 ## Project info
